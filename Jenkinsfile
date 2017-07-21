@@ -2,9 +2,11 @@ pipeline {
     agent any
     stages {
         stage('Building Docker Container') {
+		 agent{
           docker {
             image 'tomcat:8.0'
           }
+		 }
         }
         stage('Run local container') {
             steps {
