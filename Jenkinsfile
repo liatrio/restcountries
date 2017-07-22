@@ -18,7 +18,7 @@ pipeline {
         stage('Build Container') {
           agent any
             steps {
-                sh 'docker built -t restcountries-tomcat .'
+                sh 'docker build -t restcountries-tomcat .'
             }
         }
         stage('Run local container') {
