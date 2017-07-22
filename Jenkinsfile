@@ -1,11 +1,13 @@
 pipeline {
-    agent any
+    agent none
     stages {
         stage('Deploy to Nexus') {
+          agent {
             docker {
                 image 'maven:3.5.0'
                 args '-e INITIAL_ADMIN_USER -e INITIAL_ADMIN_PASSWORD --network=${LDOP_NETWORK_NAME}'
             }
+          }
             steps {
                 configFileProvider(
                        [configFile(fileId: 'nexus', variable: 'MAVEN_SETTINGS')]) {
@@ -14,17 +16,20 @@ pipeline {
             }
         }
         stage('Build Container') {
+          agent any
             steps {
                 sh 'docker built -t restcountries-tomcat .'
             }
         }
         stage('Run local container') {
+          agent any
             steps {
                 sh 'docker rm -f local-restcountries || true'
                 sh 'docker run -p 19080:8080 -d --network=${LDOP_NETWORK_NAME} --name local-restcountries restcountries-tomcat'
             }
         }
         stage('Smoke test') {
+          agent any
             steps {
                 echo "Running tests"
                 //maven test goes here
