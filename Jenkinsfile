@@ -33,6 +33,7 @@ pipeline {
             steps {
                 echo "Running tests"
                 //maven test goes here
+                sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
                 //restapi testing goes here
             }
         }
