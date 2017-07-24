@@ -48,6 +48,7 @@ pipeline {
             }
         }
         stage('Stop local container') {
+		  agent any
             steps {
                 sh 'docker rm -f local-restcountries || true'
             }
