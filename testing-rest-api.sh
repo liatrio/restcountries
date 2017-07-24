@@ -110,7 +110,7 @@ fi
 
 curl=
 endpoint=
-endpoint="region/rope"
+endpoint="region/europe"
 curl="$(curl -sI http://localhost:8080/restcountries/rest/v2/"$endpoint" | head -1 | grep -oE '200')"
 echo "checking /rest/v2/$endpoint... "
 if [ "$curl" == "$success" ]; then
