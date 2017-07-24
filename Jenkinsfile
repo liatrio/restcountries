@@ -37,7 +37,7 @@ pipeline {
           }
           steps {
             echo "Running maven test"
-            sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
+            sh "mvn clean -B test -DPETCLINIC_URL=http://local-restcountries:8080/restcountries/"
           }
         }
         stage('API test for local') {
@@ -69,7 +69,7 @@ pipeline {
           }
           steps {
             echo "Running maven test"
-            sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
+            sh "mvn clean -B test -DPETCLINIC_URL=http://dev-restcountries:8080/restcountries/"
           }
         }
         stage('API test for dev') {
@@ -95,29 +95,41 @@ pipeline {
           }
           steps {
             echo "Running maven test"
-            sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
+            sh "mvn clean -B test -DPETCLINIC_URL=http://qa-restcountries:8080/restcountries/"
           }
         }
         stage('API test for qa') {
           agent any
             steps {
                 sh "docker cp testing-rest-api.sh qa-restcountries:/usr/local/tomcat/"
-				sh "docker exec qa-restcountries bash ./testing-rest-api.sh"
-				input 'Deploy to Prod?'
+                sh "docker exec qa-restcountries bash ./testing-rest-api.sh"
+                input 'Deploy to Prod?'
             }
         }
         stage('Deploy to prod') {
-		  agent any
-            steps {
-                sh 'docker rm -f prod-restcountries || true'
-                sh 'docker run -p 19083:8080 -d --network=${LDOP_NETWORK_NAME} --name prod-restcountries restcountries-tomcat'
+          agent any
+          steps {
+              sh 'docker rm -f prod-restcountries || true'
+              sh 'docker run -p 19083:8080 -d --network=${LDOP_NETWORK_NAME} --name prod-restcountries restcountries-tomcat'
+          }
+        }
+        stage('Maven test for prod') {
+          agent {
+            docker {
+               image 'maven:3.5.0'
+               args '--network=${LDOP_NETWORK_NAME}'
             }
+          }
+          steps {
+            echo "Running maven test"
+            sh "mvn clean -B test -DPETCLINIC_URL=http://prod-restcountries:8080/restcountries/"
+          }
         }
         stage('API test for prod') {
           agent any
             steps {
                 sh "docker cp testing-rest-api.sh prod-restcountries:/usr/local/tomcat/"
-				sh "docker exec prod-restcountries bash ./testing-rest-api.sh"
+                sh "docker exec prod-restcountries bash ./testing-rest-api.sh"
             }
         }
     }
