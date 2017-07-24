@@ -28,12 +28,22 @@ pipeline {
                 sh 'docker run -p 19080:8080 -d --network=${LDOP_NETWORK_NAME} --name local-restcountries restcountries-tomcat'
             }
         }
-        stage('Smoke test') {
+        stage('Maven test') {
+          agent {
+            docker {
+               image 'maven:3.5.0'
+               args '--network=${LDOP_NETWORK_NAME}'
+            }
+          }
+          steps {
+            echo "Running maven test"
+            sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
+          }
+        }
+        stage('API test') {
           agent any
             steps {
-                echo "Running tests"
-                //maven test goes here
-                //sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
+                echo "Running API tests"
                 //restapi testing goes here
             }
         }
