@@ -2,12 +2,14 @@
 endpoint="all"
 curl="$(curl -sI http://localhost:8080/restcountries/rest/v2/"$endpoint" | head -1 | grep -oE '200')"
 success=200
+counter=0
+
 echo "checking /rest/v2/$endpoint... "
 if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -19,7 +21,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -31,7 +33,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -43,7 +45,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -55,7 +57,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -67,7 +69,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -79,7 +81,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -91,7 +93,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -103,7 +105,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -115,7 +117,7 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
 fi
 
 curl=
@@ -127,5 +129,12 @@ if [ "$curl" == "$success" ]; then
         echo "done."
 else
         echo "curl command failed."
-        exit 1;
+        counter=$((counter+1))
+fi
+echo ""
+echo "$counter test(s) failed."
+if [ $counter > 0 ]; then
+	exit 1;
+else
+	exit 0;
 fi
