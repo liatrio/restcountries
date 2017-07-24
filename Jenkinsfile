@@ -103,6 +103,21 @@ pipeline {
             steps {
                 sh "docker cp testing-rest-api.sh qa-restcountries:/usr/local/tomcat/"
 				sh "docker exec qa-restcountries bash ./testing-rest-api.sh"
+				input 'Deploy to Prod?'
+            }
+        }
+        stage('Deploy to prod') {
+		  agent any
+            steps {
+                sh 'docker rm -f prod-restcountries || true'
+                sh 'docker run -p 19083:8080 -d --network=${LDOP_NETWORK_NAME} --name prod-restcountries restcountries-tomcat'
+            }
+        }
+        stage('API test for prod') {
+          agent any
+            steps {
+                sh "docker cp testing-rest-api.sh prod-restcountries:/usr/local/tomcat/"
+				sh "docker exec prod-restcountries bash ./testing-rest-api.sh"
             }
         }
     }
