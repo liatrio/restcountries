@@ -75,8 +75,34 @@ pipeline {
         stage('API test for dev') {
           agent any
             steps {
-                sh "docker cp testing-rest-api.sh dev-restcountries:/usr/local/tomcat/"
-				sh "docker exec dev-restcountries bash ./testing-rest-api.sh"
+                sh "docker cp testing-rest-api.sh qa-restcountries:/usr/local/tomcat/"
+				sh "docker exec qa-restcountries bash ./testing-rest-api.sh"
+            }
+        }
+        stage('Deploy to qa') {
+		  agent any
+            steps {
+                sh 'docker rm -f qa-restcountries || true'
+                sh 'docker run -p 19081:8080 -d --network=${LDOP_NETWORK_NAME} --name qa-restcountries restcountries-tomcat'
+            }
+        }
+        stage('Maven test for qa') {
+          agent {
+            docker {
+               image 'maven:3.5.0'
+               args '--network=${LDOP_NETWORK_NAME}'
+            }
+          }
+          steps {
+            echo "Running maven test"
+            sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
+          }
+        }
+        stage('API test for qa') {
+          agent any
+            steps {
+                sh "docker cp testing-rest-api.sh qa-restcountries:/usr/local/tomcat/"
+				sh "docker exec qa-restcountries bash ./testing-rest-api.sh"
             }
         }
     }
