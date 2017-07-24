@@ -43,7 +43,8 @@ pipeline {
         stage('API test') {
           agent any
             steps {
-                echo "Running API tests"
+                sh "docker cp testing-rest-api.sh local-restcountries:/usr/local/tomcat/"
+				sh "docker exec local-restcountries bash ./testing-rest-api.sh"
                 //restapi testing goes here
             }
         }
