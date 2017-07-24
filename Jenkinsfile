@@ -76,7 +76,7 @@ pipeline {
           agent any
             steps {
                 sh "docker cp testing-rest-api.sh dev-restcountries:/usr/local/tomcat/"
-				sh "docker exec local-restcountries bash ./testing-rest-api.sh"
+				sh "docker exec dev-restcountries bash ./testing-rest-api.sh"
             }
         }
     }
