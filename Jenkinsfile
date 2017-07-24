@@ -28,7 +28,7 @@ pipeline {
                 sh 'docker run -p 19080:8080 -d --network=${LDOP_NETWORK_NAME} --name local-restcountries restcountries-tomcat'
             }
         }
-        stage('Maven test') {
+        stage('Maven test for local') {
           agent {
             docker {
                image 'maven:3.5.0'
@@ -40,7 +40,7 @@ pipeline {
             sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
           }
         }
-        stage('API test') {
+        stage('API test for local') {
           agent any
             steps {
                 sh "docker cp testing-rest-api.sh local-restcountries:/usr/local/tomcat/"
@@ -58,7 +58,7 @@ pipeline {
                 sh 'docker run -p 19081:8080 -d --network=${LDOP_NETWORK_NAME} --name dev-restcountries restcountries-tomcat'
             }
         }
-        stage('Maven test') {
+        stage('Maven test for dev') {
           agent {
             docker {
                image 'maven:3.5.0'
@@ -70,7 +70,7 @@ pipeline {
             sh "mvn clean -B test -DPETCLINIC_URL=http://restcountries-tomcat:8080/restcountries/"
           }
         }
-        stage('API test') {
+        stage('API test for dev') {
           agent any
             steps {
                 sh "docker cp testing-rest-api.sh dev-restcountries:/usr/local/tomcat/"
