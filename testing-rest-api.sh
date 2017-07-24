@@ -133,7 +133,7 @@ else
 fi
 echo ""
 echo "$counter test(s) failed."
-if [ $counter > 0 ]; then
+if [ "$counter" -ne "0" ]; then
 	exit 1;
 else
 	exit 0;
