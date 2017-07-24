@@ -54,6 +54,7 @@ pipeline {
             }
         }
         stage('Deploy to dev') {
+		  agent any
             steps {
                 sh 'docker rm -f dev-restcountries || true'
                 sh 'docker run -p 19081:8080 -d --network=${LDOP_NETWORK_NAME} --name dev-restcountries restcountries-tomcat'
