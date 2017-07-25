@@ -34,7 +34,7 @@ pipeline {
                image 'maven:3.5.0'
                args '--network=${LDOP_NETWORK_NAME}'
             }
-          }
+          
           steps {
             echo "Running maven test"
             sh "mvn clean -B test -DPETCLINIC_URL=http://local-restcountries:8080/restcountries/"
@@ -43,7 +43,7 @@ pipeline {
         stage('API test for local') {
           agent any
             steps {
-              sh "docker exec local-restcountries bash ./testing-rest-api.sh"
+              sh "docker exec local-restcountries bash /usr/local/tomcat/webapps/testing-rest-api.sh"
             }
         }
         stage('Stop local container') {
@@ -74,7 +74,7 @@ pipeline {
         stage('API test for dev') {
           agent any
             steps {
-              sh "docker exec dev-restcountries bash ./testing-rest-api.sh"
+              sh "docker exec dev-restcountries bash /usr/local/tomcat/webapps/testing-rest-api.sh"
             }
         }
         stage('Deploy to qa') {
@@ -99,7 +99,7 @@ pipeline {
         stage('API test for qa') {
           agent any
             steps {
-                sh "docker exec qa-restcountries bash ./testing-rest-api.sh"
+                sh "docker exec qa-restcountries bash /usr/local/tomcat/webapps/testing-rest-api.sh"
                 input 'Deploy to Prod?'
             }
         }
