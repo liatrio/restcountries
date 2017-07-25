@@ -34,7 +34,7 @@ pipeline {
                image 'maven:3.5.0'
                args '--network=${LDOP_NETWORK_NAME}'
             }
-          
+          }
           steps {
             echo "Running maven test"
             sh "mvn clean -B test -DPETCLINIC_URL=http://local-restcountries:8080/restcountries/"
